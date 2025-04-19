@@ -1,0 +1,31 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@diplodoc/transform": "^4.54.0",
+    "@gravity-ui/markdown-editor": "^15.8.0",
+    "@tanstack/react-query": "^5.74.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@gravity-ui/eslint-config": "^4.0.1",
+    "@gravity-ui/prettier-config": "^1.1.0",
+    "@gravity-ui/uikit": "^7.9.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.25.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.1"
+  }
+}
