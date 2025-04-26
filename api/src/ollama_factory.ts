@@ -11,8 +11,12 @@ type Env = {
 const withOllama = createFactory<Env>({
   initApp: (app) => {
     app.use(async (c, next) => {
-      const chat = new OllamaChat({ model: "gemma3:1b" });
-      const embeddings = new OllamaEmbeddings({ model: "nomic-embed-text" });
+      const chat = new OllamaChat({
+        model: process.env.OLLAMA_CHAT_MODEL as string,
+      });
+      const embeddings = new OllamaEmbeddings({
+        model: process.env.OLLAMA_EMBEDDINGS_MODEL as string,
+      });
       c.set("chat", chat);
       c.set("embeddings", embeddings);
       await next();

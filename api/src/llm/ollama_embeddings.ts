@@ -2,7 +2,7 @@ import { ollama } from "./ollama";
 import { Embeddings, EmbeddingsRequest, EmbeddingsResponse } from "./llm";
 
 export interface OllamaEmbeddingsOptions {
-  model: "nomic-embed-text";
+  model: "nomic-embed-text" | string;
 }
 
 export class OllamaEmbeddings implements Embeddings {

@@ -3,7 +3,7 @@ import { ReadableStream } from "stream/web";
 import { Chat, ChatRequest, ChatResponse } from "./llm";
 
 export interface OllamaChatOptions {
-  model: "gemma3:1b";
+  model: "gemma3:1b" | string;
 }
 
 export class OllamaChat implements Chat {
