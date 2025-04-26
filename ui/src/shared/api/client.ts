@@ -1,7 +1,7 @@
 import {PostEndpoints, PostRequest, PostStreamRequestMap, PostStreamResponseMap} from './model';
 
 function createClient() {
-    const url = 'http://127.0.0.1:8080';
+    const url = import.meta.env.VITE_API_URI;
 
     return {
         $post: async function* <T extends PostEndpoints, K extends PostStreamRequestMap[T]>(

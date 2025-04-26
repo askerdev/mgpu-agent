@@ -1,4 +1,4 @@
-import ollama from "ollama";
+import { ollama } from "./ollama";
 import { ReadableStream } from "stream/web";
 import { Chat, ChatRequest, ChatResponse } from "./llm";
 

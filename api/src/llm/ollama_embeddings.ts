@@ -1,4 +1,4 @@
-import ollama from "ollama";
+import { ollama } from "./ollama";
 import { Embeddings, EmbeddingsRequest, EmbeddingsResponse } from "./llm";
 
 export interface OllamaEmbeddingsOptions {
