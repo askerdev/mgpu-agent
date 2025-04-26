@@ -13,11 +13,11 @@ import {ThemeProvider} from '@gravity-ui/uikit';
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
+
         <QueryClientProvider client={queryClient}>
             <ThemeProvider theme="light">
                 <App />
             </ThemeProvider>
         </QueryClientProvider>
-    </StrictMode>,
+
 );

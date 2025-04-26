@@ -1,9 +1,38 @@
-import {PostEndpoints, PostRequest, PostStreamRequestMap, PostStreamResponseMap} from './model';
+import {
+    PostEndpoints,
+    PostRequest,
+    PostRequestMap,
+    PostResponseMap,
+    PostStreamRequestMap,
+    PostStreamResponseMap,
+} from './model';
 
 function createClient() {
     const url = import.meta.env.VITE_API_URI;
 
     return {
+        post: async function <T extends PostEndpoints, K extends PostRequestMap[T]>(
+            req: PostRequest<T, K>,
+        ) {
+            const response = await fetch(`${url}${req.endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...req.headers,
+                },
+                body: JSON.stringify(req.body),
+                signal: req?.signal,
+                credentials: 'include',
+            });
+
+            if (!response.ok || !response.body) {
+                throw new Error('failed to fetch');
+            }
+
+            const data = await response.json();
+
+            return data as PostResponseMap[T];
+        },
         $post: async function* <T extends PostEndpoints, K extends PostStreamRequestMap[T]>(
             req: PostRequest<T, K>,
         ) {
@@ -14,6 +43,7 @@ function createClient() {
                 },
                 body: JSON.stringify(req.body),
                 signal: req?.signal,
+                credentials: 'include',
             });
 
             if (!response.ok || !response.body) {
@@ -36,4 +66,4 @@ function createClient() {
     };
 }
 
-export const {$post} = createClient();
+export const {$post, post} = createClient();

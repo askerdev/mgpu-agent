@@ -1,1 +1,1 @@
-export {$post} from './client';
+export {$post, post} from './client';
