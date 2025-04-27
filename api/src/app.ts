@@ -7,6 +7,8 @@ import { setSignedCookie } from "hono/cookie";
 import { vkSvc } from "./services/vk";
 import { userSvc } from "./services/user";
 import { auth } from "./middleware";
+import { chatSvc } from "./services/chat";
+import { sql } from "./postgres";
 
 const app = withOllama
   .createApp()
@@ -28,18 +30,77 @@ const app = withOllama
     async (c) => {
       const body = c.req.valid("json");
       const chat = c.get("chat");
+
+      const { id } = c.get("user");
+      const dbChat = await chatSvc.getChat(id);
+
       const response = await chat.prompt({
         messages: [{ role: "user", content: body.message }],
+        signal: c.req.raw.signal,
       });
+
       return streamSSE(c, async (stream) => {
+        let content = "";
         for await (const { message } of response.values()) {
+          content += message.content;
           stream.writeSSE({
             data: JSON.stringify(message),
             event: "chunk",
           });
         }
+        await sql
+          .begin(async (tx) => {
+            await chatSvc.createMessage(
+              {
+                chat_id: dbChat.id,
+                content: body.message,
+                role: "user",
+              },
+              tx
+            );
+            await chatSvc.createMessage(
+              {
+                chat_id: dbChat.id,
+                content,
+                role: "assistant",
+              },
+              tx
+            );
+          })
+          .catch(console.error);
         stream.close();
       });
+    }
+  )
+  .delete("/messages/history", auth(), async (c) => {
+    const { id } = c.get("user");
+    chatSvc.deleteMessages(id);
+    return c.json({ success: true });
+  })
+  .get(
+    "/messages",
+    auth(),
+    zValidator(
+      "query",
+      z.object({
+        cursor: z.string().optional(),
+        pageSize: z.preprocess(
+          (v) => parseInt(z.string().parse(v), 10),
+          z.number().positive().min(1).max(20)
+        ),
+      })
+    ),
+    async (c) => {
+      const { cursor, pageSize } = c.req.valid("query");
+      const { id } = c.get("user");
+
+      const messages = await chatSvc.getMessages({
+        userId: id,
+        pageSize,
+        cursor,
+      });
+
+      return c.json(messages);
     }
   )
   .get("/auth/me", auth(), async (c) => {
@@ -47,6 +108,7 @@ const app = withOllama
 
     return c.json({ user });
   })
+  .get("/oauth/vk/callback", (c) => c.redirect("https://khuzhokov.ru"))
   .post(
     "/auth/vk",
     zValidator(

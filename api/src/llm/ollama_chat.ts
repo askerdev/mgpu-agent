@@ -11,6 +11,7 @@ export class OllamaChat implements Chat {
 
   async prompt({
     messages,
+    signal,
   }: ChatRequest): Promise<ReadableStream<ChatResponse>> {
     const response = await ollama.chat({
       model: this.options.model,
@@ -18,7 +19,7 @@ export class OllamaChat implements Chat {
       stream: true,
     });
 
-    return new ReadableStream({
+    const stream = new ReadableStream({
       async start(controller) {
         for await (const { message } of response) {
           controller.enqueue({ message });
@@ -29,5 +30,11 @@ export class OllamaChat implements Chat {
         response.abort();
       },
     });
+
+    signal?.addEventListener("abort", () => {
+      response.abort();
+    });
+
+    return stream;
   }
 }

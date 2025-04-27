@@ -15,3 +15,18 @@ export interface User {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface Chat {
+  id: string;
+  user_id: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Message {
+  id: string;
+  chat_id: string;
+  content: string;
+  role: "assistant" | "user";
+  created_at: Date;
+}

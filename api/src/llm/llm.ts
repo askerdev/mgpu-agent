@@ -7,6 +7,7 @@ export interface ChatMessage {
 
 export interface ChatRequest {
   messages: Array<ChatMessage>;
+  signal?: AbortSignal;
 }
 
 export interface ChatResponse {
@@ -19,6 +20,7 @@ export interface Chat {
 
 export interface EmbeddingsRequest {
   prompt: string;
+  signal?: AbortSignal;
 }
 
 export interface EmbeddingsResponse {

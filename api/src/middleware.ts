@@ -11,7 +11,6 @@ export interface AuthEnv {
 export const auth = () => {
   return async (c: Context<AuthEnv>, next: Next) => {
     const raw = await getSignedCookie(c, "supersecret", "session");
-    console.log(raw);
 
     if (!raw) {
       c.status(401);
