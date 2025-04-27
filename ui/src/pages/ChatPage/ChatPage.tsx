@@ -1,8 +1,7 @@
 import * as React from 'react';
 
 import transform from '@diplodoc/transform';
-import {BroomMotion, CircleStop} from '@gravity-ui/icons';
-import {ArrowShapeRight} from '@gravity-ui/icons';
+import {ArrowShapeRight, BroomMotion, CircleStop} from '@gravity-ui/icons';
 import {YfmStaticView} from '@gravity-ui/markdown-editor';
 import {Button, Card, Flex, Icon, Loader, TextInput, User} from '@gravity-ui/uikit';
 import {useInfiniteQuery, useQuery, useQueryClient} from '@tanstack/react-query';

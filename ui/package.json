@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint ./src",
     "preview": "vite preview"
   },
   "dependencies": {
     "@diplodoc/transform": "^4.54.0",
+    "@gravity-ui/icons": "^2.13.0",
     "@gravity-ui/markdown-editor": "^15.8.0",
     "@tanstack/react-query": "^5.74.4",
     "@vkid/sdk": "^2.5.2",
