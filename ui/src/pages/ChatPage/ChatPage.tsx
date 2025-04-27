@@ -4,11 +4,12 @@ import transform from '@diplodoc/transform';
 import {BroomMotion, CircleStop} from '@gravity-ui/icons';
 import {ArrowShapeRight} from '@gravity-ui/icons';
 import {YfmStaticView} from '@gravity-ui/markdown-editor';
-import {Button, Card, Flex, Icon, Loader, TextInput} from '@gravity-ui/uikit';
-import {useInfiniteQuery, useQueryClient} from '@tanstack/react-query';
+import {Button, Card, Flex, Icon, Loader, TextInput, User} from '@gravity-ui/uikit';
+import {useInfiniteQuery, useQuery, useQueryClient} from '@tanstack/react-query';
 
 import {useClearMessagesMutation} from '../../queries/clearMessageHistory';
 import {getChatMessagesQuery} from '../../queries/getChatMessages';
+import {getCurrentUserQuery} from '../../queries/getCurrentUser';
 import {ChatService} from '../../services/chat.service';
 
 import styles from './ChatPage.module.css';
@@ -30,6 +31,8 @@ export function ChatPage() {
         },
     });
     const {data, isPending, isSuccess} = useInfiniteQuery(queryOptions);
+    const userQueryOptions = React.useMemo(() => getCurrentUserQuery(), []);
+    const userQuery = useQuery(userQueryOptions);
 
     const htmlData = React.useMemo(() => {
         if (!isSuccess || !data) {
@@ -181,6 +184,12 @@ export function ChatPage() {
                     </Flex>
                 </form>
             </div>
+            {userQuery.isSuccess ? (
+                <User
+                    avatar={userQuery.data.user.avatar}
+                    name={`${userQuery.data.user.last_name} ${userQuery.data.user.first_name}`}
+                />
+            ) : null}
         </div>
     );
 }
