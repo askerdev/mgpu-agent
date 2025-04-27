@@ -4,11 +4,11 @@ import transform from '@diplodoc/transform';
 import {YfmStaticView} from '@gravity-ui/markdown-editor';
 import {Card, TextInput} from '@gravity-ui/uikit';
 
-import {useChat} from '../../api/chat';
+import {useChat} from './chat';
 
 import styles from './Chat.module.css';
 
-export function Chat() {
+export function ChatPage() {
     const [controller] = React.useState(() => new AbortController());
     const [messages, mutate] = useChat({signal: controller.signal});
     const html = React.useMemo(() => transform(messages.join('')).result.html, [messages]);

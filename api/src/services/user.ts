@@ -47,4 +47,18 @@ export class UserService {
 
     return user as User;
   }
+
+  async getUser(id: string) {
+    const [user] = await sql`
+      SELECT
+         *
+      FROM
+        users
+      WHERE id = ${id}
+   `;
+
+    return user as User | null;
+  }
 }
+
+export const userSvc = new UserService();

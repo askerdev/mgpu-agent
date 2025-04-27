@@ -1,10 +1,9 @@
 import * as React from 'react';
 
-import {Box, Flex, User} from '@gravity-ui/uikit';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {Box, Flex} from '@gravity-ui/uikit';
 import * as VKID from '@vkid/sdk';
 
-import {post} from '../../../../shared/api';
+import {UserService} from '../services/user.service';
 
 VKID.Config.init({
     app: 53456359,
@@ -13,14 +12,7 @@ VKID.Config.init({
     scope: 'email',
 });
 
-const authQueryKey = ['auth', 'user'];
-
 export function AuthPage() {
-    const queryClient = useQueryClient();
-    const {data} = useQuery<VKID.UserInfoResult | null>({
-        queryKey: authQueryKey,
-        queryFn: () => null,
-    });
     const isMounted = React.useRef(false);
     const oneTap = React.useRef(new VKID.OneTap());
 
@@ -37,14 +29,9 @@ export function AuthPage() {
                     const deviceId = payload.device_id;
 
                     const {access_token} = await VKID.Auth.exchangeCode(code, deviceId);
-                    const result = await post({
-                        endpoint: '/oauth/vk',
-                        body: undefined,
-                        headers: {
-                            Authorization: `Bearer ${access_token}`,
-                        },
-                    });
-                    queryClient.setQueryData(authQueryKey, result);
+
+                    await UserService.auth(access_token);
+                    window.location.href = '/';
                 });
 
             isMounted.current = true;
@@ -56,16 +43,7 @@ export function AuthPage() {
 
     return (
         <Flex justifyContent="center" alignItems="center" height="100dvh">
-            {data ? (
-                <User
-                    avatar={data.user.avatar}
-                    name={`${data.user.last_name} ${data.user.first_name}`}
-                    description={data.user.email}
-                    size="xl"
-                />
-            ) : (
-                <Box ref={ref} width="360px" />
-            )}
+            <Box ref={ref} width="360px" />
         </Flex>
     );
 }

@@ -18,3 +18,5 @@ export class VkService {
     return data;
   }
 }
+
+export const vkSvc = new VkService();
