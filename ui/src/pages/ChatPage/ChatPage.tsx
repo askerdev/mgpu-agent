@@ -5,6 +5,7 @@ import {ArrowShapeRight, BroomMotion, CircleStop} from '@gravity-ui/icons';
 import {YfmStaticView} from '@gravity-ui/markdown-editor';
 import {Button, Card, Flex, Icon, Loader, TextInput, User} from '@gravity-ui/uikit';
 import {useInfiniteQuery, useQuery, useQueryClient} from '@tanstack/react-query';
+import {ErrorBoundary} from 'react-error-boundary';
 
 import {useClearMessagesMutation} from '../../queries/clearMessageHistory';
 import {getChatMessagesQuery} from '../../queries/getChatMessages';
@@ -12,6 +13,14 @@ import {getCurrentUserQuery} from '../../queries/getCurrentUser';
 import {ChatService} from '../../services/chat.service';
 
 import styles from './ChatPage.module.css';
+
+const getHtml = (markdown: string): string => {
+    try {
+        return transform(markdown).result.html;
+    } catch (_) {
+        return markdown;
+    }
+};
 
 export function ChatPage() {
     const scrollIntoView = React.useCallback((div: HTMLDivElement | null) => {
@@ -41,7 +50,7 @@ export function ChatPage() {
         const items = data.map(({id, role, content, created_at}) => ({
             id,
             role,
-            html: transform(content).result.html,
+            html: getHtml(content),
             createdAt: new Date(created_at),
         }));
 
@@ -55,14 +64,8 @@ export function ChatPage() {
     const [isPrompting, setIsPrompting] = React.useState(false);
     const [currentAnswer, setCurrentAnswer] = React.useState('');
     const [currentPrompt, setCurrentPrompt] = React.useState('');
-    const currentPromptHTML = React.useMemo(
-        () => transform(currentPrompt).result.html,
-        [currentPrompt],
-    );
-    const currentAnswerHTML = React.useMemo(
-        () => transform(currentAnswer).result.html,
-        [currentAnswer],
-    );
+    const currentPromptHTML = React.useMemo(() => getHtml(currentPrompt), [currentPrompt]);
+    const currentAnswerHTML = React.useMemo(() => getHtml(currentAnswer), [currentAnswer]);
 
     const onSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
@@ -123,7 +126,9 @@ export function ChatPage() {
                                 spacing={{p: 6}}
                                 view={msg.role === 'user' ? 'outlined' : 'filled'}
                             >
-                                <YfmStaticView html={msg.html} noListReset />
+                                <ErrorBoundary fallback={msg.html}>
+                                    <YfmStaticView html={msg.html} noListReset />
+                                </ErrorBoundary>
                             </Card>
                         ))}
                         {currentPromptHTML ? (
@@ -133,7 +138,9 @@ export function ChatPage() {
                                 view="outlined"
                                 className={styles.message_user}
                             >
-                                <YfmStaticView html={currentPromptHTML} noListReset />
+                                <ErrorBoundary fallback={currentPromptHTML}>
+                                    <YfmStaticView html={currentPromptHTML} noListReset />
+                                </ErrorBoundary>
                             </Card>
                         ) : null}
                         {currentAnswerHTML || isLoadingAnswer ? (
@@ -141,7 +148,9 @@ export function ChatPage() {
                                 {isLoadingAnswer ? (
                                     <Loader size="m" />
                                 ) : (
-                                    <YfmStaticView html={currentAnswerHTML} noListReset />
+                                    <ErrorBoundary fallback={currentAnswerHTML}>
+                                        <YfmStaticView html={currentAnswerHTML} noListReset />
+                                    </ErrorBoundary>
                                 )}
                             </Card>
                         ) : null}

@@ -14,7 +14,7 @@ const app = withOllama
   .createApp()
   .use(
     cors({
-      origin: "https://khuzhokov.ru",
+      origin: ["https://khuzhokov.ru", "https://dev.khuzhokov.ru"],
       credentials: true,
     })
   )
@@ -35,7 +35,14 @@ const app = withOllama
       const dbChat = await chatSvc.getChat(id);
 
       const response = await chat.prompt({
-        messages: [{ role: "user", content: body.message }],
+        messages: [
+          {
+            role: "user",
+            content:
+              "You are helpful Assistant, your name is Bobik. Answer only in valid Markdown.",
+          },
+          { role: "user", content: body.message },
+        ],
         signal: c.req.raw.signal,
       });
 
