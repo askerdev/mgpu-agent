@@ -7,7 +7,7 @@ export class VkService {
       {
         method: "POST",
         body: new URLSearchParams({
-          client_id: process.env.VK_CLIENT_ID,
+          client_id: process.env.VK_CLIENT_ID!,
           access_token,
         }),
       }
@@ -15,7 +15,7 @@ export class VkService {
 
     const data = await response.json();
 
-    return data;
+    return data as UserInfoResult;
   }
 }
 

@@ -4,13 +4,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx --watch ./src/index.ts"
+    "dev": "tsx --watch ./src/index.ts",
+    "build": "tsc --noEmit && esbuild ./src/index.ts --bundle --platform=node --packages=external --outfile=./index.cjs",
+    "start": "node index.cjs"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
     "@hono/zod-validator": "^0.4.3",
-    "@langchain/core": "^0.3.43",
-    "@langchain/ollama": "^0.2.0",
     "@vkid/sdk": "^2.5.2",
     "dotenv": "^16.5.0",
     "hono": "^4.7.6",
@@ -20,6 +20,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.2",
-    "tsx": "^4.19.3"
+    "esbuild": "^0.25.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
   }
 }
