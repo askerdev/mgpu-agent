@@ -1,3 +1,6 @@
-node_modules/
-.env
-index.cjs
+venv
+.venv
+*.pyc
+.DS_Store
+__pycache__
+chroma

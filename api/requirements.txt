@@ -1,0 +1,10 @@
+uvicorn
+typing
+sqlmodel
+fastapi[standard]
+langchain
+langchain-community
+langchain-ollama
+langchain-chroma
+chromadb
+pypdf
