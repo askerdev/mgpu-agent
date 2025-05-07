@@ -1,3 +1,7 @@
+class VK:
+    client_id = 53456359
+
+
 class Chroma:
     path = "chroma"
     data = "data"

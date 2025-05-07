@@ -18,7 +18,7 @@ export class ChatService {
             method: 'POST',
             headers: {
                 Accept: 'text/event-stream',
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json;charset=utf-8',
             },
             body: JSON.stringify(payload),
             signal,
