@@ -8,3 +8,4 @@ langchain-ollama
 langchain-chroma
 chromadb
 pypdf
+cryptography

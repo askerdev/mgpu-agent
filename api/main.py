@@ -1,6 +1,5 @@
-import json
-import datetime
-import asyncio
+from rag.prepare_db import prepare_db
+from rag.get_chain import get_chain
 from typing import Annotated
 from models.db import create_db_and_tables
 from fastapi import Body, FastAPI
@@ -12,21 +11,17 @@ app = FastAPI()
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
-
-
-class MessageCreate():
-    test: str
+    prepare_db()
 
 
 @app.post("/chat")
-async def root(body: Annotated[MessageCreate, Body(embed=True)]):
+async def root(message: Annotated[str, Body(embed=True)]):
+    chain = get_chain()
+
     async def event_generator():
-        for i in range(10):
-            await asyncio.sleep(1)
-            data = json.dumps({
-                "current_time": datetime.datetime.now().isoformat(),
-            })
-            yield f"data: {data}\n"
+        async for chunk in chain.astream(message):
+            yield f"{chunk}"
+
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 

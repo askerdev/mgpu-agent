@@ -1,11 +1,19 @@
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import TextLoader
-
-loader = TextLoader("data/test.txt")
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+from settings.settings import Settings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFDirectoryLoader
 
 
 def get_documents():
-    documents = loader.load()
+    document_loader = PyPDFDirectoryLoader(Settings.chroma.data)
+    documents = document_loader.load()
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=800,
+        chunk_overlap=80,
+        length_function=len,
+        is_separator_regex=False,
+    )
+
     chunks = text_splitter.split_documents(documents)
+
     return chunks
