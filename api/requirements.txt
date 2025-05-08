@@ -1,7 +1,9 @@
+requests
 uvicorn
 typing
 sqlmodel
 fastapi[standard]
+fastapi-login
 langchain
 langchain-community
 langchain-ollama

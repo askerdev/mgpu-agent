@@ -1,5 +1,4 @@
-class VK:
-    client_id = 53456359
+import os
 
 
 class Chroma:
@@ -12,7 +11,14 @@ class Ollama:
     chat_model = "gemma3:1b"
 
 
+class Auth:
+    cookie_key = "auth"
+    vk_client_id = 53456359
+    secret = os.urandom(24).hex()
+
+
 class Settings:
     db_url: str = "sqlite:///database.db"
     ollama = Ollama
     chroma = Chroma
+    auth = Auth

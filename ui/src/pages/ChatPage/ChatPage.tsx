@@ -82,9 +82,13 @@ export function ChatPage() {
         setIsLoadingAnswer(true);
         try {
             const stream = await ChatService.prompt({message: prompt}, controller.signal);
-            setIsLoadingAnswer(false);
+            let isRecv = false;
             for await (const {content} of stream()) {
                 setCurrentAnswer((prev) => prev + content);
+                if (!isRecv && content.length) {
+                    setIsLoadingAnswer(false);
+                    isRecv = true;
+                }
             }
         } finally {
             setIsLoadingAnswer(false);

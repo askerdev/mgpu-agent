@@ -9,7 +9,7 @@ class UserBase(SQLModel):
 
 
 class User(UserBase, table=True):
-    id: int = Field(primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     vk_id: int = Field(unique=True)
 
 
