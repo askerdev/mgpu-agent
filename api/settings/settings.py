@@ -2,8 +2,8 @@ import os
 
 
 class Chroma:
-    path = "chroma"
-    data = "data"
+    path = "root/mgpu-agent/api/chroma"
+    data = "root/mgpu-agent/api/data"
 
 
 class Ollama:
@@ -18,7 +18,7 @@ class Auth:
 
 
 class Settings:
-    db_url: str = "sqlite:///database.db"
+    db_url: str = "sqlite:///root/mgpu-agent/api/database.db"
     ollama = Ollama
     chroma = Chroma
     auth = Auth
