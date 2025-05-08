@@ -55,7 +55,7 @@ export function ChatPage() {
         }));
 
         return items.sort((a, b) => {
-            return a.createdAt.getTime() - b.createdAt.getTime() || a.role === 'user' ? -1 : 1;
+            return a.id - b.id;
         });
     }, [data, isSuccess]);
 

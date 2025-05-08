@@ -1,7 +1,6 @@
 import json
 from settings.settings import Settings
-from rag.prepare_db import prepare_db
-from rag.get_chain import get_chain
+from rag.query import query_rag
 from typing import Annotated
 from models.db import create_db_and_tables, SessionDep, Session, engine
 from oauth.vk import get_user_info
@@ -46,24 +45,23 @@ def query_user(vk_id: str):
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
-    prepare_db()
 
 
 @app.post("/chat")
 async def root(user: UserDep, session: SessionDep, message: Annotated[str, Body(embed=True)]):
-    chain = get_chain()
-
     statement = select(Chat).where(Chat.user_id == user.id)
     chat = session.exec(statement).first()
 
     async def event_generator():
         answer = ""
-        async for chunk in chain.astream(message):
-            answer += chunk
+        query, sources = query_rag(message)
+        async for chunk in query:
+            answer += chunk.content
             event = "event: chunk"
             data = f"data: {json.dumps(
-                {"content": chunk, "role": "assistant"})}"
+                {"content": chunk.content, "role": "assistant"})}"
             yield f"{event}\n{data}\n\n"
+        answer += f"\n\nИсточники: {sources}"
         db_msg = Message(content=message, role="user", chat_id=chat.id)
         session.add(db_msg)
         session.commit()
@@ -143,8 +141,6 @@ async def auth_vk(session: SessionDep,
 async def delete_messages(session: SessionDep, user: UserDep):
     statement = select(Chat).where(Chat.user_id == user.id)
     chat = session.exec(statement).first()
-
-    print(chat)
 
     if chat is None:
         return {"success": False}

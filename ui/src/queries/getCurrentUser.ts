@@ -6,4 +6,5 @@ export const getCurrentUserQuery = () =>
     queryOptions({
         queryKey: ['auth', 'me'],
         queryFn: () => UserService.me(),
+        retry: 0,
     });

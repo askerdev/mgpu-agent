@@ -10,4 +10,5 @@ langchain-ollama
 langchain-chroma
 chromadb
 pypdf
+docx2txt
 cryptography

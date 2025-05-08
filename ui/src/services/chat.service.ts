@@ -1,7 +1,7 @@
 import {request} from './request';
 
 export interface Message {
-    id: string;
+    id: number;
     content: string;
     role: string;
     created_at: string;
